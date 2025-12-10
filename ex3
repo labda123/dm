@@ -1,0 +1,147 @@
+Step 1: Create a Google Cloud Project and enable the Indexing API.
+Step 2: Generate service account credentials and assign permissions in Google Search
+Console.
+Step 3: Use a script (Python) to send a POST request to the Indexing API with the URL to be
+updated.
+Step 4: Parse and display the response from the API.
+
+
+Here is the **easy English version** of your steps and procedure — simple, clear, and suitable for lab record writing:
+
+---
+
+# **Simplified Steps (Easy English)**
+
+**Step 1:** Create a Google Cloud project and turn ON the Indexing API.
+**Step 2:** Create a service account, download the JSON key, and add the service account in Google Search Console.
+**Step 3:** Use a Python script to send a request to Google Indexing API to update a URL.
+**Step 4:** Read the response from the API after running the script.
+
+---
+
+# **Simplified Procedure (Easy and Slightly Detailed)**
+
+## **Step 1: Create and Set Up Your Google Cloud Project**
+
+### **1.1 Open Google Cloud Console**
+
+* Go to: **[https://console.cloud.google.com](https://console.cloud.google.com)**
+* Sign in with your Google account.
+
+### **1.2 Create a New Project**
+
+* Click the project dropdown at the top.
+* Select **New Project**.
+* Give it a name like **IndexingAPIProject**.
+* Click **Create**.
+
+### **1.3 Enable the Indexing API**
+
+* Go to **APIs & Services → Library**.
+* Search for **Indexing API**.
+* Click **Enable**.
+
+### **1.4 Create a Service Account**
+
+* Go to **APIs & Services → Credentials**.
+* Click **Create Credentials → Service Account**.
+* Give a name (example: *indexing-bot*).
+* For role, choose **Basic → Owner** or **Editor**.
+* Finish setup.
+
+### **1.5 Create a Service Account Key**
+
+* Click your service account → **Keys tab**.
+* Click **Add Key → Create New Key → JSON**.
+* A **.json file** will download — this is your private key.
+* Save it safely; you need it for the Python code.
+
+---
+
+## **Step 2: Give Permission in Google Search Console**
+
+### **2.1 Open Search Console**
+
+* Go to: **[https://search.google.com/search-console](https://search.google.com/search-console)**
+* Make sure your website/domain is added and verified.
+
+### **2.2 Add the Service Account**
+
+* Open **Settings → Users and Permissions**.
+* Click **Add User**.
+* Enter the service account email from the JSON file:
+  **[indexing-bot@project-id.iam.gserviceaccount.com](mailto:indexing-bot@project-id.iam.gserviceaccount.com)**
+* Give **Full Access**.
+* Click **Add**.
+
+Your service account now has permission to index URLs for your website.
+
+---
+
+## **Step 3: Write and Run the Python Script**
+
+### **3.1 Install required libraries**
+
+Run in terminal:
+
+```
+pip install google-auth google-auth-oauthlib requests
+```
+
+### **3.2 Create a Python file**
+
+Create a file named **indexing_api.py** and paste this:
+
+```python
+from google.oauth2 import service_account
+from google.auth.transport.requests import AuthorizedSession
+import json
+
+# Path to your service account file
+SERVICE_ACCOUNT_FILE = 'your-service-account.json'
+
+SCOPES = ["https://www.googleapis.com/auth/indexing"]
+
+# The URL you want to index
+url = "https://example.com/new-article"
+
+# Authenticate
+credentials = service_account.Credentials.from_service_account_file(
+    SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+
+authed_session = AuthorizedSession(credentials)
+
+# Prepare data for updating the URL
+json_body = {
+    "url": url,
+    "type": "URL_UPDATED"
+}
+
+# Send request to Google Indexing API
+response = authed_session.post(
+    "https://indexing.googleapis.com/v3/urlNotifications:publish",
+    json=json_body)
+
+# Print the result
+print("Response Status Code:", response.status_code)
+print("Response Body:", response.text)
+```
+
+---
+
+## **Step 4: Run and Check Output**
+
+Run the script in your terminal:
+
+```
+python indexing_api.py
+```
+
+You will see:
+
+* A **status code** (like 200 = success)
+* A **response body** showing Google’s confirmation that the URL was sent for indexing
+
+---
+
+If you want, I can rewrite this as a **PDF**, a **flowchart**, or a **short exam-ready answer**.
